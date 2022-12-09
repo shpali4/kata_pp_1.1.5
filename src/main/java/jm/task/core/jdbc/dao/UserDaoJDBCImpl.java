@@ -1,6 +1,7 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
+import jm.task.core.jdbc.util.Util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,13 +21,10 @@ public class UserDaoJDBCImpl implements UserDao {
     public static final String GET_ALL_USERS = "SELECT * FROM users";
     public static final String REMOVE_USER_BY_ID = "DELETE FROM users WHERE id = ?;";
     public static final String CLEAN_USERS_TABLE = "DELETE FROM users;";
-    private Connection connection;
+    private final Connection connection = Util.getConnection();
 
     public UserDaoJDBCImpl() {
 
-    }
-    public UserDaoJDBCImpl(Connection connection) {
-        this.connection = connection;
     }
 
     public void createUsersTable() {
