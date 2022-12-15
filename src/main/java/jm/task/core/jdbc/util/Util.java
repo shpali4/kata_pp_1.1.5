@@ -18,6 +18,7 @@ public class Util {
     public static final String DIALECT = "org.hibernate.dialect.MySQL8Dialect";
 
     private static SessionFactory sessionFactory;
+    private static Configuration configuration;
     public static Connection getConnection() {
         Connection connection = null;
         try {
@@ -34,13 +35,21 @@ public class Util {
     }
 
     public static SessionFactory getSessionFactory() {
-        Configuration configuration = new Configuration()
-                .setProperty("hibernate.connection.url", URL)
-                .setProperty("hibernate.connection.username", USER)
-                .setProperty("hibernate.connection.password", PASSWORD)
-                .setProperty("hibernate.connection.driver_class", DRIVER)
-                .setProperty("hibernate.dialect", DIALECT);
-        sessionFactory = configuration.addAnnotatedClass(User.class).buildSessionFactory();
+        if (sessionFactory != null) {
+            if (!sessionFactory.isClosed()) {
+                return sessionFactory;
+            }
+        }
+        if (configuration == null) {
+           configuration = new Configuration()
+                    .setProperty("hibernate.connection.url", URL)
+                    .setProperty("hibernate.connection.username", USER)
+                    .setProperty("hibernate.connection.password", PASSWORD)
+                    .setProperty("hibernate.connection.driver_class", DRIVER)
+                    .setProperty("hibernate.dialect", DIALECT);
+            configuration.addAnnotatedClass(User.class);
+        }
+        sessionFactory = configuration.buildSessionFactory();
         return sessionFactory;
     }
 
